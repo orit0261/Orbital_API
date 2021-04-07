@@ -1,0 +1,6 @@
+{"locations": [
+     {"name": "Haifa, IL", "latitude": 32.8000, "longitude": 34.9833, "alt": 47.2}
+    ,{"name": "Tel Aviv, IL", "latitude": 32.0833, "longitude": 34.8000, "alt": 30}
+    ,{"name": "Beer Sheva, IL", "latitude": 31.2589, "longitude": 34.7978, "alt": 24}
+    ,{"name": "Eilat, IL", "latitude": 29.55805, "longitude": 34.94821, "alt": 80}
+]}
