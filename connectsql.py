@@ -14,10 +14,10 @@ class iss_path:
         self.db_connection, self.db_cursor = connect()
 
     def __del__(self):
-        print('Del Connection...')
+        print('Open Connection...')
         self.db_cursor.close()
         self.db_connection.close()
-        print('Finished Del Connection...')
+        print('Close Connection...')
 
 
     # orbitals details are send to api request and get response back
@@ -30,7 +30,7 @@ class iss_path:
 
     # insert all data from locations.json to orbital_data_orit_naor table
     def get_response(self, p_city, p_lat, p_lon, p_n):
-
+        print('Start processing city :',p_city,"\n")
         params = {'lat': p_lat, 'lon': p_lon, 'n': p_n}
         response = requests.get(self.URL_ADDRESS, params=params)
         try:
@@ -40,6 +40,7 @@ class iss_path:
             self.db_cursor.executemany("INSERT INTO orbital_data_orit_naor(CITY,DURATION,RISETIME) VALUES (%s,%s,%s)",
                                        data)
             self.db_connection.commit()
+            print('End processing city :', p_city,"\n")
         except Exception as e:
             print(e, flush=True)
             self.db_connection.rollback()
