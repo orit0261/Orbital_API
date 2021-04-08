@@ -35,8 +35,9 @@ class iss_path:
         response = requests.get(self.URL_ADDRESS, params=params)
         try:
             response_json = response.json()['response']
-            data = [(p_city, response_json['duration'], datetime.datetime.fromtimestamp(int(response_json["risetime"])))
+            data = [(p_city, response_json['duration'], datetime.datetime.utcfromtimestamp(int(response_json["risetime"])))
                     for response_json in response.json()['response']]
+
             self.db_cursor.executemany("INSERT INTO orbital_data_orit_naor(CITY,DURATION,RISETIME) VALUES (%s,%s,%s)",
                                        data)
             self.db_connection.commit()
