@@ -1,10 +1,11 @@
-import urllib.request
-import json
-
-import requests
-
-params = {'lat':32.8000,'lon':34.9833,'n':50}
-response = requests.get("http://api.open-notify.org/iss-pass.json",params=params)
-rows = response.json()['response']
+from connectsql import iss_path
+p1 = iss_path()
+try:
+    p1.execute()
+except Exception as e:
+    print(e, flush=True)
+    p1.execute()
+finally:
+    del p1
 
 
