@@ -10,7 +10,15 @@ class iss_path:
     URL_ADDRESS = "http://api.open-notify.org/iss-pass.json"
 
     def __init__(self):
-        pass
+        print('Create Connection...')
+        self.db_connection, self.db_cursor = connect()
+
+    def __del__(self):
+        print('Del Connection...')
+        self.db_cursor.close()
+        self.db_connection.close()
+        print('Finished Del Connection...')
+
 
     # orbitals details are send to api request and get response back
     def fill_json_to_tbl(self):
@@ -23,29 +31,26 @@ class iss_path:
     # insert all data from locations.json to orbital_data_orit_naor table
     def get_response(self, p_city, p_lat, p_lon, p_n):
 
-        db_connection, db_cursor = connect()
         params = {'lat': p_lat, 'lon': p_lon, 'n': p_n}
         response = requests.get(self.URL_ADDRESS, params=params)
         try:
             response_json = response.json()['response']
             data = [(p_city, response_json['duration'], datetime.datetime.fromtimestamp(int(response_json["risetime"])))
                     for response_json in response.json()['response']]
-            db_cursor.executemany("INSERT INTO orbital_data_orit_naor(CITY,DURATION,RISETIME) VALUES (%s,%s,%s)", data)
-            db_connection.commit()
+            self.db_cursor.executemany("INSERT INTO orbital_data_orit_naor(CITY,DURATION,RISETIME) VALUES (%s,%s,%s)",
+                                       data)
+            self.db_connection.commit()
         except Exception as e:
             print(e, flush=True)
-            db_connection.rollback()
-        finally:
-            db_cursor.close()
-            db_connection.close()
+            self.db_connection.rollback()
+            self.db_cursor.close()
+            self.db_connection.close()
 
     # convert stored procedure results to csv file
     def sql_to_csv(self):
-
-        db_connection, db_cursor = connect()
         try:
-            db_cursor.callproc('city_status_orit_naor')
-            for result in db_cursor.stored_results():
+            self.db_cursor.callproc('city_status_orit_naor')
+            for result in self.db_cursor.stored_results():
                 res1 = result.fetchall()
                 column_names = [x[0] for x in result.description]
 
@@ -57,9 +62,8 @@ class iss_path:
             fp.close()
         except Exception as e:
             print(e, flush=True)
-        finally:
-            db_cursor.close()
-            db_connection.close()
+            self.db_cursor.close()
+            self.db_connection.close()
 
     def execute(self):
         print("Start fill table..")
