@@ -8,16 +8,16 @@ import requests
 # class for all tasks needs
 class iss_path:
     URL_ADDRESS = "http://api.open-notify.org/iss-pass.json"
+    CSV_FILE_NAME = 'results.csv'
 
     def __init__(self):
         print('Create Connection...')
         self.db_connection, self.db_cursor = connect()
 
     def __del__(self):
-        print('Open Connection...')
+        print('Close Connection...')
         self.db_cursor.close()
         self.db_connection.close()
-        print('Close Connection...')
 
 
     # orbitals details are send to api request and get response back
@@ -57,7 +57,7 @@ class iss_path:
                 column_names = [x[0] for x in result.description]
 
             response_jsons = res1
-            fp = open('results.csv', 'w')
+            fp = open(self.CSV_FILE_NAME, 'w')
             myFile = csv.writer(fp, lineterminator='\n')
             myFile.writerow(column_names)
             myFile.writerows(response_jsons)
@@ -72,6 +72,6 @@ class iss_path:
         self.fill_json_to_tbl()
         print("Finished fill table..")
 
-        print("Start create csv file..")
+        print("Start creating csv file..")
         self.sql_to_csv()
-        print("csv file created")
+        print("csv file was created successfully")
