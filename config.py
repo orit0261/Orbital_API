@@ -35,7 +35,6 @@ def connect():
         if db_connection.is_connected():
             db_connection.connect()
             print('Connected to MySQL database')
-
     except Error as e:
         print(e)
 
