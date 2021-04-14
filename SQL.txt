@@ -1,0 +1,4 @@
+CREATE DEFINER=`interview_user`@`%` PROCEDURE `city_stats_orit_naor`()
+SELECT distinct city As cityname,
+(SELECT COUNT(*) / COUNT(distinct date(risetime)) FROM orbital_data_asaf_shtrul where city = cityname) As passavg
+FROM orbital_da
